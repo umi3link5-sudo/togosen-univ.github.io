@@ -1444,7 +1444,12 @@ function renderCMSDashboard(container) {
             <i data-lucide="message-square" style="width:16px;"></i> 修正提案管理
           </button>
           
-          <button class="cms-nav-btn cms-logout-btn" id="cms-logout-action">
+          <div class="cms-nav-title font-outfit" style="margin-top: 1.5rem;">SYSTEM</div>
+          <button class="cms-nav-btn ${cmsActiveTab === "github-settings" ? "active" : ""}" data-tab="github-settings">
+            <i data-lucide="settings" style="width:16px;"></i> GitHub 連携設定
+          </button>
+          
+          <button class="cms-nav-btn cms-logout-btn" id="cms-logout-action" style="margin-top: 2rem;">
             <i data-lucide="log-out" style="width:16px;"></i> ログアウト
           </button>
         </aside>
@@ -1723,6 +1728,8 @@ function renderCMSList(target) {
         }
       });
     });
+  } else if (cmsActiveTab === "github-settings") {
+    renderGitHubSettings(target);
   }
 }
 
@@ -1738,78 +1745,172 @@ function renderCMSForm(target) {
         <h2 class="cms-content-title font-outfit">${isNew ? "新規記事の作成" : "記事の編集"}</h2>
       </div>
 
-      <form id="cms-article-form" class="cms-form">
-        <div class="cms-form-row">
-          <div class="form-group">
-            <label for="form-article-id">スラッグ (URL用/英数字記号)</label>
-            <input type="text" id="form-article-id" class="form-control" value="${cmsEditingItem.id}" ${isNew ? "" : "disabled"} required pattern="[a-zA-Z0-9\\-]+">
-          </div>
-          <div class="form-group">
-            <label for="form-article-title">記事タイトル</label>
-            <input type="text" id="form-article-title" class="form-control" value="${cmsEditingItem.title}" required>
-          </div>
-        </div>
+      <div class="cms-split-layout">
+        <!-- Left: Editor Pane -->
+        <div class="cms-editor-pane">
+          <form id="cms-article-form" class="cms-form" style="margin-top: 0;">
+            <div class="cms-form-row">
+              <div class="form-group">
+                <label for="form-article-id">スラッグ (URL用/英数字記号)</label>
+                <input type="text" id="form-article-id" class="form-control" value="${cmsEditingItem.id}" ${isNew ? "" : "disabled"} required pattern="[a-zA-Z0-9\\-]+">
+              </div>
+              <div class="form-group">
+                <label for="form-article-title">記事タイトル</label>
+                <input type="text" id="form-article-title" class="form-control" value="${cmsEditingItem.title}" required>
+              </div>
+            </div>
 
-        <div class="cms-form-row">
-          <div class="form-group">
-            <label for="form-article-series">対象統合戦略シリーズ</label>
-            <select id="form-article-series" class="form-control" required>
-              ${seriesList.map(s => `<option value="${s.id}" ${cmsEditingItem.seriesId === s.id ? "selected" : ""}>${s.title}</option>`).join("")}
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="form-article-category">カテゴリ</label>
-            <select id="form-article-category" class="form-control" required>
-              <option value="攻略記事" ${cmsEditingItem.category === "攻略記事" ? "selected" : ""}>攻略記事</option>
-              <option value="検証記事" ${cmsEditingItem.category === "検証記事" ? "selected" : ""}>検証記事</option>
-              <option value="お知らせ" ${cmsEditingItem.category === "お知らせ" ? "selected" : ""}>お知らせ</option>
-            </select>
-          </div>
-        </div>
+            <div class="cms-form-row">
+              <div class="form-group">
+                <label for="form-article-series">対象統合戦略シリーズ</label>
+                <select id="form-article-series" class="form-control" required>
+                  ${seriesList.map(s => `<option value="${s.id}" ${cmsEditingItem.seriesId === s.id ? "selected" : ""}>${s.title}</option>`).join("")}
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="form-article-category">カテゴリ</label>
+                <select id="form-article-category" class="form-control" required>
+                  <option value="攻略記事" ${cmsEditingItem.category === "攻略記事" ? "selected" : ""}>攻略記事</option>
+                  <option value="検証記事" ${cmsEditingItem.category === "検証記事" ? "selected" : ""}>検証記事</option>
+                  <option value="お知らせ" ${cmsEditingItem.category === "お知らせ" ? "selected" : ""}>お知らせ</option>
+                </select>
+              </div>
+            </div>
 
-        <div class="cms-form-row">
-          <div class="form-group">
-            <label for="form-article-tags">タグ (カンマ区切り)</label>
-            <input type="text" id="form-article-tags" class="form-control" value="${cmsEditingItem.tags.join(", ")}" placeholder="難易度15, オペレーター推奨">
-          </div>
-          <div class="form-group">
-            <label for="form-article-status">公開設定</label>
-            <select id="form-article-status" class="form-control" required>
-              <option value="draft" ${cmsEditingItem.status === "draft" ? "selected" : ""}>下書き</option>
-              <option value="published" ${cmsEditingItem.status === "published" ? "selected" : ""}>公開</option>
-            </select>
-          </div>
-        </div>
+            <div class="cms-form-row">
+              <div class="form-group">
+                <label for="form-article-tags">タグ (カンマ区切り)</label>
+                <input type="text" id="form-article-tags" class="form-control" value="${cmsEditingItem.tags.join(", ")}" placeholder="難易度15, オペレーター推奨">
+              </div>
+              <div class="form-group">
+                <label for="form-article-status">公開設定</label>
+                <select id="form-article-status" class="form-control" required>
+                  <option value="draft" ${cmsEditingItem.status === "draft" ? "selected" : ""}>下書き</option>
+                  <option value="published" ${cmsEditingItem.status === "published" ? "selected" : ""}>公開</option>
+                </select>
+              </div>
+            </div>
 
-        <div class="form-group">
-          <label for="form-article-content" style="display:flex; justify-content:space-between; align-items:center;">
-            <span>記事本文 (Markdown記法)</span>
-            <span class="image-uploader-wrapper">
-              <label for="form-article-image-upload" class="btn-primary" style="font-size:0.75rem; padding:0.25rem 0.75rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.25rem;">
-                <i data-lucide="image" style="width:14px; height:14px;"></i> 画像を挿入 (ローカルファイル)
+            <!-- Custom Tag Guide -->
+            <details class="custom-tags-guide">
+              <summary class="custom-tags-guide-summary">
+                <span><i data-lucide="help-circle" style="width:14px; height:14px; vertical-align:middle; margin-right:0.25rem;"></i> カスタムタグの書き方ガイド</span>
+                <i data-lucide="chevron-down" style="width:16px; height:16px;"></i>
+              </summary>
+              <div class="custom-tags-guide-content">
+                <div class="guide-item">
+                  <div class="guide-item-title">
+                    <span>A. カスタムバッジ</span>
+                    <button type="button" class="btn-insert-tag" data-template="[badge: 難易度15 | danger]">挿入</button>
+                  </div>
+                  <div class="guide-item-example">[badge: テキスト | タイプ]<br>※タイプ: danger(赤), warning(黄), info(青), success(緑), default(黒)</div>
+                </div>
+                <div class="guide-item">
+                  <div class="guide-item-title">
+                    <span>B. カードグリッド</span>
+                    <button type="button" class="btn-insert-tag" data-template="&#10;[card-grid]&#10;[card: タイトル | 本文説明 | フッター]&#10;[/card-grid]&#10;">挿入</button>
+                  </div>
+                  <div class="guide-item-example">[card-grid] ... [/card-grid] の中に [card: タイトル | 本文 | フッター] を並べます。</div>
+                </div>
+                <div class="guide-item">
+                  <div class="guide-item-title">
+                    <span>C. 手順ステップリスト</span>
+                    <button type="button" class="btn-insert-tag" data-template="&#10;[steps]&#10;[step: 手順1のタイトル]&#10;手順の説明文をここに記述します。&#10;[/step]&#10;[step: 手順2 of タイトル]&#10;次の手順の説明文。&#10;[/step]&#10;[/steps]&#10;">挿入</button>
+                  </div>
+                  <div class="guide-item-example">[steps] ... [/steps] の中に [step: タイトル] 本文 [/step] を並べます。</div>
+                </div>
+                <div class="guide-item">
+                  <div class="guide-item-title">
+                    <span>D. アラート（GitHubスタイル）</span>
+                    <button type="button" class="btn-insert-tag" data-template="&#10;> [!NOTE]&#10;> ここにノートのアラート本文を入力します。&#10;">挿入</button>
+                  </div>
+                  <div class="guide-item-example">行頭に &gt; [!NOTE], [!TIP], [!IMPORTANT], [!WARNING], [!CAUTION] を使用。</div>
+                </div>
+                <div class="guide-item">
+                  <div class="guide-item-title">
+                    <span>E. 脚注</span>
+                    <button type="button" class="btn-insert-tag" data-template="[^1]">参照挿入</button>
+                  </div>
+                  <div class="guide-item-example">本文中に [^1]、最下行に [^1]: 注釈説明 を記述します。</div>
+                </div>
+              </div>
+            </details>
+
+            <div class="form-group">
+              <label for="form-article-content" style="display:flex; justify-content:space-between; align-items:center;">
+                <span>記事本文 (Markdown記法)</span>
+                <span class="image-uploader-wrapper">
+                  <label for="form-article-image-upload" id="form-article-image-upload-label" class="btn-primary" style="font-size:0.75rem; padding:0.25rem 0.75rem; cursor:pointer; display:inline-flex; align-items:center; gap:0.25rem;">
+                    <i data-lucide="image" style="width:14px; height:14px;"></i> 画像を挿入 (GitHubへアップロード)
+                  </label>
+                  <input type="file" id="form-article-image-upload" accept="image/*" style="display:none;">
+                </span>
               </label>
-              <input type="file" id="form-article-image-upload" accept="image/*" style="display:none;">
-            </span>
-          </label>
-          <textarea id="form-article-content" class="form-control" style="min-height:350px; font-family:var(--font-mono); font-size:0.85rem;" required>${cmsEditingItem.content}</textarea>
-          <div class="cms-markdown-hint">
-            ※ 目次は <code>## 目次 (自動生成対象)</code> のように記述すると自動挿入されます。見出しは <code>## 見出し2</code> / <code>### 見出し3</code> を使用してください。
-            <br>※ アラート: <code>&gt; [!NOTE]</code> または <code>&gt; [!IMPORTANT]</code> が利用可能です。
-            <br>※ 脚注: <code>[^1]</code> などのインライン参照と、最終行での定義 <code>[^1]: 注記説明</code> がサポートされています。
-          </div>
+              <textarea id="form-article-content" class="form-control" style="min-height:450px; font-family:var(--font-mono); font-size:0.85rem;" required>${cmsEditingItem.content}</textarea>
+            </div>
+
+            <div class="cms-form-buttons">
+              <button type="submit" class="btn-primary">保存する</button>
+              <button type="button" class="btn-secondary" id="cms-cancel-btn">キャンセル</button>
+            </div>
+          </form>
         </div>
 
-        <div class="cms-form-buttons">
-          <button type="submit" class="btn-primary">保存する</button>
-          <button type="button" class="btn-secondary" id="cms-cancel-btn">キャンセル</button>
+        <!-- Right: Preview Pane -->
+        <div class="cms-preview-pane">
+          <div class="cms-preview-header">
+            <span>REALTIME PREVIEW</span>
+            <span><i data-lucide="eye" style="width:12px; height:12px; vertical-align:middle;"></i> LIVE</span>
+          </div>
+          <div id="cms-preview-area" class="cms-preview-body article-body">
+            <!-- Render preview here -->
+          </div>
         </div>
-      </form>
+      </div>
     `;
 
-    // Hook Image Upload
+    // Hook Realtime Preview
+    const textarea = target.querySelector("#form-article-content");
+    const previewArea = target.querySelector("#cms-preview-area");
+
+    function updatePreview() {
+      if (previewArea && textarea) {
+        previewArea.innerHTML = renderMarkdown(textarea.value);
+      }
+    }
+
+    if (textarea) {
+      textarea.addEventListener("input", updatePreview);
+      updatePreview(); // Initial render
+    }
+
+    // Hook Custom Tag Insertions
+    const insertButtons = target.querySelectorAll(".btn-insert-tag");
+    insertButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const template = btn.getAttribute("data-template");
+        if (!textarea) return;
+
+        const startPos = textarea.selectionStart;
+        const endPos = textarea.selectionEnd;
+        const text = textarea.value;
+
+        textarea.value = text.substring(0, startPos) + template + text.substring(endPos);
+        textarea.focus();
+        
+        const newCursorPos = startPos + template.length;
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+
+        updatePreview();
+      });
+    });
+
+    // Hook Image Upload (GitHub API Integration)
     const imageUploadInput = target.querySelector("#form-article-image-upload");
+    const imageUploadLabel = target.querySelector("#form-article-image-upload-label");
+    
     if (imageUploadInput) {
-      imageUploadInput.addEventListener("change", (e) => {
+      imageUploadInput.addEventListener("change", async (e) => {
         const file = e.target.files[0];
         if (!file) return;
 
@@ -1818,25 +1919,60 @@ function renderCMSForm(target) {
           return;
         }
 
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const base64Data = event.target.result;
-          const textarea = target.querySelector("#form-article-content");
-          
-          const startPos = textarea.selectionStart;
-          const endPos = textarea.selectionEnd;
-          const text = textarea.value;
-          const imageMarkdown = `\n![画像の説明](${base64Data})\n`;
-          
-          textarea.value = text.substring(0, startPos) + imageMarkdown + text.substring(endPos);
-          
-          textarea.focus();
-          const newCursorPos = startPos + imageMarkdown.length;
-          textarea.setSelectionRange(newCursorPos, newCursorPos);
-          
+        const settings = JSON.parse(localStorage.getItem("togosen_github_settings") || "{}");
+        if (!settings.token) {
+          alert("画像をアップロードするには、先に「GitHub 連携設定」タブでアクセストークンを設定してください。");
           imageUploadInput.value = "";
-        };
-        reader.readAsDataURL(file);
+          return;
+        }
+
+        try {
+          // Show upload loading spinner
+          imageUploadLabel.style.pointerEvents = "none";
+          imageUploadLabel.innerHTML = `<span class="image-upload-spinner"></span> アップロード中...`;
+
+          const reader = new FileReader();
+          reader.onload = async (event) => {
+            try {
+              const base64Data = event.target.result;
+              const rawBase64 = base64Data.split(",")[1];
+              
+              const safeFileName = file.name.replace(/[^a-zA-Z0-9\.\-_]/g, "_");
+              const path = `images/uploads/${Date.now()}_${safeFileName}`;
+              
+              await githubUploadFile(path, rawBase64, `Upload ${file.name} via CMS`);
+
+              const textarea = target.querySelector("#form-article-content");
+              const startPos = textarea.selectionStart;
+              const endPos = textarea.selectionEnd;
+              const text = textarea.value;
+              const imageMarkdown = `\n![${file.name}](${path})\n`;
+
+              textarea.value = text.substring(0, startPos) + imageMarkdown + text.substring(endPos);
+              textarea.focus();
+              const newCursorPos = startPos + imageMarkdown.length;
+              textarea.setSelectionRange(newCursorPos, newCursorPos);
+              
+              updatePreview();
+            } catch (err) {
+              console.error(err);
+              alert(`画像のアップロードに失敗しました: ${err.message}`);
+            } finally {
+              // Restore button label
+              imageUploadLabel.style.pointerEvents = "auto";
+              imageUploadLabel.innerHTML = `<i data-lucide="image" style="width:14px; height:14px;"></i> 画像を挿入 (GitHubへアップロード)`;
+              if (window.lucide) window.lucide.createIcons();
+              imageUploadInput.value = "";
+            }
+          };
+          reader.readAsDataURL(file);
+        } catch (err) {
+          console.error(err);
+          alert(`ファイルの読み込みに失敗しました: ${err.message}`);
+          imageUploadLabel.style.pointerEvents = "auto";
+          imageUploadLabel.innerHTML = `<i data-lucide="image" style="width:14px; height:14px;"></i> 画像を挿入 (GitHubへアップロード)`;
+          if (window.lucide) window.lucide.createIcons();
+        }
       });
     }
 
@@ -2032,6 +2168,183 @@ function renderCMSForm(target) {
     cmsEditingItem = null;
     renderCMSDashboard(document.getElementById("app"));
   });
+}
+
+// --- GITHUB API UTILITIES ---
+function utf8ToBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+async function githubUploadFile(path, contentBase64, message) {
+  const settings = JSON.parse(localStorage.getItem("togosen_github_settings") || "{}");
+  if (!settings.token || !settings.owner || !settings.repo) {
+    throw new Error("GitHubトークンまたはリポジトリ設定が未設定です。「GitHub 連携設定」画面で設定してください。");
+  }
+
+  const { token, owner, repo, branch = "main" } = settings;
+
+  // 1. Check if file exists to get SHA (for overwrite)
+  let sha = null;
+  try {
+    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`, {
+      headers: {
+        "Authorization": `token ${token}`,
+        "Accept": "application/vnd.github.v3+json"
+      }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      sha = data.sha;
+    }
+  } catch (e) {
+    // If file doesn't exist, sha remains null
+  }
+
+  // 2. Put file content
+  const body = {
+    message: message || `Update ${path} via CMS`,
+    content: contentBase64,
+    branch: branch
+  };
+  if (sha) {
+    body.sha = sha;
+  }
+
+  const putRes = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
+    method: "PUT",
+    headers: {
+      "Authorization": `token ${token}`,
+      "Accept": "application/vnd.github.v3+json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
+
+  if (!putRes.ok) {
+    const errorData = await putRes.json();
+    throw new Error(`GitHubアップロード失敗: ${errorData.message || putRes.statusText}`);
+  }
+
+  const responseData = await putRes.json();
+  return responseData.content.path;
+}
+
+// GitHub Settings Tab UI
+function renderGitHubSettings(target) {
+  const settings = JSON.parse(localStorage.getItem("togosen_github_settings") || JSON.stringify({
+    token: "",
+    owner: "umi3link5-sudo",
+    repo: "togosen-univ.github.io",
+    branch: "main"
+  }));
+
+  target.innerHTML = `
+    <div class="cms-content-header">
+      <h2 class="cms-content-title font-outfit">GitHub 連携設定</h2>
+    </div>
+
+    <div id="github-sync-msg" class="github-sync-status" style="display:none;"></div>
+
+    <form id="github-settings-form" class="cms-form">
+      <div class="form-group">
+        <label for="gh-token">GitHub Personal Access Token (PAT)</label>
+        <input type="password" id="gh-token" class="form-control" value="${settings.token || ''}" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" required>
+        <div style="font-size: 0.75rem; color: var(--color-text-light); margin-top: 0.5rem;">
+          ※ リポジトリへの書き込み権限（Contents: Read & Write）を持つトークンを入力してください。トークンはブラウザの LocalStorage にのみ安全に保存されます。
+        </div>
+      </div>
+
+      <div class="cms-form-row">
+        <div class="form-group">
+          <label for="gh-owner">リポジトリ所有者 (Owner)</label>
+          <input type="text" id="gh-owner" class="form-control" value="${settings.owner || ''}" required>
+        </div>
+        <div class="form-group">
+          <label for="gh-repo">リポジトリ名 (Repo)</label>
+          <input type="text" id="gh-repo" class="form-control" value="${settings.repo || ''}" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="gh-branch">デプロイ先ブランチ (Branch)</label>
+        <input type="text" id="gh-branch" class="form-control" value="${settings.branch || 'main'}" required>
+      </div>
+
+      <div class="cms-form-buttons" style="margin-top: 2rem;">
+        <button type="submit" class="btn-primary">設定を保存する</button>
+      </div>
+    </form>
+
+    <div style="margin-top: 3rem; border-top: 1px solid var(--color-border); padding-top: 2rem;">
+      <h3 class="font-outfit" style="margin-bottom: 1rem;">サイトの公開（GitHubへのデータ同期）</h3>
+      <p style="font-size: 0.85rem; color: var(--color-text-sub); margin-bottom: 1.5rem;">
+        ローカル（LocalStorage）に保存されている現在のすべての変更（記事、動画、大会記録など）を GitHub 上の <code>js/seedData.js</code> に上書き送信し、Webサイトを更新（再デプロイ）します。
+      </p>
+      <button id="github-sync-publish-btn" class="btn-primary" style="background-color: var(--color-success); border-color: var(--color-success);">
+        <i data-lucide="cloud-lightning" style="width:14px; height:14px; vertical-align:middle; margin-right:0.25rem;"></i> 変更を GitHub に保存して公開する
+      </button>
+    </div>
+  `;
+
+  // Hook setting save
+  const form = target.querySelector("#github-settings-form");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const token = target.querySelector("#gh-token").value.trim();
+    const owner = target.querySelector("#gh-owner").value.trim();
+    const repo = target.querySelector("#gh-repo").value.trim();
+    const branch = target.querySelector("#gh-branch").value.trim();
+
+    localStorage.setItem("togosen_github_settings", JSON.stringify({ token, owner, repo, branch }));
+    
+    const msg = target.querySelector("#github-sync-msg");
+    msg.className = "github-sync-status success";
+    msg.innerText = "設定を保存しました。";
+    msg.style.display = "block";
+    
+    setTimeout(() => {
+      msg.style.display = "none";
+    }, 3000);
+  });
+
+  // Hook publish sync
+  const publishBtn = target.querySelector("#github-sync-publish-btn");
+  publishBtn.addEventListener("click", async () => {
+    const msg = target.querySelector("#github-sync-msg");
+    try {
+      publishBtn.disabled = true;
+      publishBtn.innerHTML = `<span class="image-upload-spinner"></span> 同期中...`;
+      msg.style.display = "none";
+
+      const series = localStorage.getItem("togosen_series_pro") || "[]";
+      const articles = localStorage.getItem("togosen_articles_pro") || "[]";
+      const videos = localStorage.getItem("togosen_videos_pro") || "[]";
+      const tournaments = localStorage.getItem("togosen_tournaments_pro") || "[]";
+
+      const fileContent = `export const INITIAL_SERIES = ${JSON.stringify(JSON.parse(series), null, 2)};\n\n` +
+                          `export const INITIAL_ARTICLES = ${JSON.stringify(JSON.parse(articles), null, 2)};\n\n` +
+                          `export const INITIAL_VIDEOS = ${JSON.stringify(JSON.parse(videos), null, 2)};\n\n` +
+                          `export const INITIAL_TOURNAMENTS = ${JSON.stringify(JSON.parse(tournaments), null, 2)};\n`;
+
+      const base64Content = utf8ToBase64(fileContent);
+      await githubUploadFile("js/seedData.js", base64Content, "Update seedData via CMS Sync");
+
+      msg.className = "github-sync-status success";
+      msg.innerHTML = `<strong>同期完了！</strong> 変更が正常に GitHub に送信されました。GitHub Pages のビルドと反映には数分かかります。`;
+      msg.style.display = "block";
+    } catch (e) {
+      console.error(e);
+      msg.className = "github-sync-status error";
+      msg.innerHTML = `<strong>エラーが発生しました:</strong> ${e.message}`;
+      msg.style.display = "block";
+    } finally {
+      publishBtn.disabled = false;
+      publishBtn.innerHTML = `<i data-lucide="cloud-lightning" style="width:14px; height:14px; vertical-align:middle; margin-right:0.25rem;"></i> 変更を GitHub に保存して公開する`;
+      if (window.lucide) window.lucide.createIcons();
+    }
+  });
+
+  if (window.lucide) window.lucide.createIcons();
 }
 
 // Start application
