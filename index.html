@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TOGOSEN Univ - 統合戦略攻略アーカイブ</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="TOGOSEN Univは、アークナイツ「統合戦略」の攻略・研究・検証・大会情報を体系的に整理し公開する公式アーカイブサイトです。">
+  <meta name="keywords" content="アークナイツ, 統合戦略, 探索者と銀氷の果て, ミヅキ, ファントム, 歳の界園志異, TOGOSEN, 攻略, 検証">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22 fill=%22%23FF6600%22>T</text></svg>">
+
+  <!-- Google Fonts: Outfit for Headings, Noto Sans JP & Inter for Body -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Third-party Libraries (CDN) -->
+  <!-- Marked: Markdown parser -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- DOMPurify: HTML sanitizer to prevent XSS in Markdown rendering -->
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.8/dist/purify.min.js"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Global Stylesheet -->
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+  <!-- App Shell -->
+  <div id="app">
+    <!-- UI will be dynamically rendered here via app.js -->
+    <div class="initial-loader">
+      <div class="loader-spinner"></div>
+      <p class="loader-text font-outfit">TOGOSEN UNIV // LOADING ARCHIVE...</p>
+    </div>
+  </div>
+
+  <!-- Application Logic (ES Modules) -->
+  <script type="module" src="./js/app.js?v=pro" charset="utf-8"></script>
+</body>
+</html>
