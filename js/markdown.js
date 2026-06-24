@@ -128,6 +128,40 @@ export function renderMarkdown(markdown) {
   
   // Custom marked renderer to inject custom heading IDs and style blockquotes
   const renderer = new window.marked.Renderer();
+
+  // Custom Image URL Resolver for uploaded images
+  renderer.image = function(href, title, text) {
+    let cleanHref = "";
+    let imgTitle = "";
+    let imgAlt = "";
+
+    if (typeof href === 'object' && href !== null) {
+      cleanHref = href.href || "";
+      imgTitle = href.title || "";
+      imgAlt = href.text || "";
+    } else {
+      cleanHref = href || "";
+      imgTitle = title || "";
+      imgAlt = text || "";
+    }
+
+    // Convert local upload paths to GitHub raw URLs if settings exist (enables instant preview)
+    if (cleanHref && cleanHref.startsWith("images/uploads/")) {
+      try {
+        const settings = JSON.parse(localStorage.getItem("togosen_github_settings") || "{}");
+        if (settings.owner && settings.repo) {
+          const branch = settings.branch || "main";
+          cleanHref = `https://raw.githubusercontent.com/${settings.owner}/${settings.repo}/${branch}/${cleanHref}`;
+        }
+      } catch (e) {
+        console.error("Failed to parse GitHub settings for image URL conversion:", e);
+      }
+    }
+
+    const titleAttr = imgTitle ? ` title="${imgTitle}"` : '';
+    const altAttr = imgAlt ? ` alt="${imgAlt}"` : '';
+    return `<img src="${cleanHref}"${altAttr}${titleAttr}>`;
+  };
   
   // Custom Heading ID generation
   renderer.heading = function(text, level, raw) {
