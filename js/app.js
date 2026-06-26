@@ -2495,9 +2495,6 @@ function renderGitHubSettings(target) {
       <p style="font-size: 0.85rem; color: var(--color-text-sub); margin-bottom: 1.5rem;">
         ローカル（LocalStorage）に保存されている現在のすべての変更（記事、動画、大会記録など）を GitHub 上の <code>js/seedData.js</code> に上書き送信し、Webサイトを更新（再デプロイ）します。
       </p>
-      <button id="github-sync-publish-btn" class="btn-primary" style="background-color: var(--color-success); border-color: var(--color-success);">
-        <i data-lucide="cloud-lightning" style="width:14px; height:14px; vertical-align:middle; margin-right:0.25rem;"></i> 変更を GitHub に保存して公開する
-      </button>
     </div>
   `;
 
