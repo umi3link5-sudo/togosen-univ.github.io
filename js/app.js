@@ -2490,12 +2490,6 @@ function renderGitHubSettings(target) {
       </div>
     </div>
 
-    <div style="margin-top: 3rem; border-top: 1px solid var(--color-border); padding-top: 2rem;">
-      <h3 class="font-outfit" style="margin-bottom: 1rem;">サイトの公開（GitHubへのデータ同期）</h3>
-      <p style="font-size: 0.85rem; color: var(--color-text-sub); margin-bottom: 1.5rem;">
-        ローカル（LocalStorage）に保存されている現在のすべての変更（記事、動画、大会記録など）を GitHub 上の <code>js/seedData.js</code> に上書き送信し、Webサイトを更新（再デプロイ）します。
-      </p>
-    </div>
   `;
 
   if (window.lucide) window.lucide.createIcons();
