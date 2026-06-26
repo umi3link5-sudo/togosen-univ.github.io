@@ -2498,43 +2498,6 @@ function renderGitHubSettings(target) {
     </div>
   `;
 
-  // Hook publish sync
-  const publishBtn = target.querySelector("#github-sync-publish-btn");
-  publishBtn.addEventListener("click", async () => {
-    const msg = target.querySelector("#github-sync-msg");
-    try {
-      publishBtn.disabled = true;
-      publishBtn.innerHTML = `<span class="image-upload-spinner"></span> 同期中...`;
-      msg.style.display = "none";
-
-      const series = localStorage.getItem("togosen_series_pro") || "[]";
-      const articles = localStorage.getItem("togosen_articles_pro") || "[]";
-      const videos = localStorage.getItem("togosen_videos_pro") || "[]";
-      const tournaments = localStorage.getItem("togosen_tournaments_pro") || "[]";
-
-      const fileContent = `export const INITIAL_SERIES = ${JSON.stringify(JSON.parse(series), null, 2)};\n\n` +
-                          `export const INITIAL_ARTICLES = ${JSON.stringify(JSON.parse(articles), null, 2)};\n\n` +
-                          `export const INITIAL_VIDEOS = ${JSON.stringify(JSON.parse(videos), null, 2)};\n\n` +
-                          `export const INITIAL_TOURNAMENTS = ${JSON.stringify(JSON.parse(tournaments), null, 2)};\n`;
-
-      const base64Content = utf8ToBase64(fileContent);
-      await githubUploadFile("js/seedData.js", base64Content, "Update seedData via CMS Sync");
-
-      msg.className = "github-sync-status success";
-      msg.innerHTML = `<strong>同期完了！</strong> 変更が正常に GitHub に送信されました。GitHub Pages のビルドと反映には数分かかります。`;
-      msg.style.display = "block";
-    } catch (e) {
-      console.error(e);
-      msg.className = "github-sync-status error";
-      msg.innerHTML = `<strong>エラーが発生しました:</strong> ${e.message}`;
-      msg.style.display = "block";
-    } finally {
-      publishBtn.disabled = false;
-      publishBtn.innerHTML = `<i data-lucide="cloud-lightning" style="width:14px; height:14px; vertical-align:middle; margin-right:0.25rem;"></i> 変更を GitHub に保存して公開する`;
-      if (window.lucide) window.lucide.createIcons();
-    }
-  });
-
   if (window.lucide) window.lucide.createIcons();
 }
 
