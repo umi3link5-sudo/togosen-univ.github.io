@@ -2403,5 +2403,281 @@ textarea.form-control {
   border-left-color: var(--color-danger);
 }
 
+/* ==========================================================================
+   LIG-style & Beige Theme Adjustments
+   ========================================================================== */
+:root {
+  --color-bg: #eae8e3;
+  --color-bg-sub: #dfdcd5;
+  --color-bg-card: #ffffff;
+  --color-border: #d2d0c8;
+}
+
+/* Base Body adjustments */
+body {
+  background-color: var(--color-bg);
+}
+
+/* Remove any background dots if any */
+body::before, body::after {
+  display: none !important;
+}
+
+/* --- Cursor Trail Canvas Layout --- */
+#cursor-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* --- Centered Hero Section with TOGODAI --- */
+.hero {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+  text-align: center;
+  padding: 6rem 0;
+  background-color: var(--color-bg);
+}
+
+.hero-container-centered {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+/* TOGODAI Giant Logo Text — INCREASED IMPACT & SIZE */
+.hero-brand-title {
+  font-size: clamp(5rem, 24vw, 16.5rem);
+  font-weight: 900;
+  line-height: 0.85;
+  letter-spacing: -0.06em;
+  color: var(--color-text);
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  animation: heroBrandFadeUp 1.4s cubic-bezier(0.215, 0.610, 0.355, 1.000) both;
+}
+
+@keyframes heroBrandFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(150px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-subtitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.35em;
+  color: var(--color-accent);
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.hero-title {
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  line-height: 1.25;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  color: var(--color-text-sub);
+}
+
+.hero-desc {
+  font-size: 1.05rem;
+  color: var(--color-text-sub);
+  max-width: 680px;
+  margin: 0 auto 2.5rem auto;
+  line-height: 1.8;
+}
+
+.hero-meta {
+  display: flex;
+  gap: 2rem;
+  font-size: 0.85rem;
+  color: var(--color-text-light);
+  justify-content: center;
+}
+
+/* --- Image Card Styling (Integrated Strategies Grid - Horizontal Side-by-Side) --- */
+.is-card.img-card {
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  height: 160px;
+  overflow: hidden;
+  align-items: center;
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  transition: all var(--transition-medium);
+}
+
+.is-card.img-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  border-color: var(--color-text);
+}
+
+.is-card-image-wrap {
+  width: auto; /* Width auto to match the image's aspect ratio */
+  height: 100%;
+  overflow: hidden;
+  border-bottom: none;
+  border-right: 1px solid var(--color-border);
+  background-color: var(--color-bg-sub);
+  flex-shrink: 0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.is-card-img {
+  width: auto; /* Fit width automatically */
+  height: 100%; /* Match parent height exactly */
+  object-fit: contain; /* Prevent cropping, keep aspect ratio */
+  background-color: var(--color-bg-sub);
+  transition: transform var(--transition-medium);
+  display: block;
+}
+
+.is-card.img-card:hover .is-card-img {
+  transform: scale(1.04);
+}
+
+.is-card-body-wrap {
+  padding: 1.75rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.is-card.img-card .is-card-title {
+  margin-bottom: 0.25rem;
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-text);
+}
+
+.is-card.img-card .is-card-footer {
+  margin: 0;
+  padding: 1.75rem;
+  border-top: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  width: 180px;
+}
+
+/* Responsive for is-card */
+@media (max-width: 768px) {
+  .is-card.img-card {
+    flex-direction: column;
+    height: auto;
+    min-height: 380px;
+    align-items: stretch;
+  }
+
+  .is-card-image-wrap {
+    width: 100%;
+    height: 180px;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .is-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Cover on mobile for better aspect filling */
+  }
+
+  .is-card.img-card .is-card-footer {
+    width: auto;
+    margin: 0 1.75rem 1.5rem 1.75rem;
+    padding: 0.75rem 0 0 0;
+    border-top: 1px solid var(--color-border);
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+/* Staggered Fade In for Hero Elements */
+.hero-brand-title {
+  animation: heroBrandFadeUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero-subtitle {
+  animation: heroElementFadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.3s;
+}
+
+.hero-title {
+  animation: heroElementFadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.5s;
+}
+
+.hero-desc {
+  animation: heroElementFadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.7s;
+}
+
+.hero-meta {
+  animation: heroElementFadeUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.9s;
+}
+
+@keyframes heroElementFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom Canvas Cursor Trail */
+#cursor-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 99999;
+}
+
+/* Hide default cursor on desktop for premium custom feel */
+@media (pointer: fine) {
+  body {
+    cursor: none;
+  }
+  a, button, select, input, textarea, [role="button"], .update-card, .tab-btn, .sortable-header, .nav-link, [style*="cursor:pointer"] {
+    cursor: none !important;
+  }
+}
+
 
 
