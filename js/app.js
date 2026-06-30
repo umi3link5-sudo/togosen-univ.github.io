@@ -791,7 +791,7 @@ function renderAbout(container) {
             DISCORD SERVER REGULATION
           </h3>
           <p style="font-size: 0.85rem; color: var(--color-text-sub); line-height: 1.6; margin-bottom: 0; margin-top: 0.5rem;">
-            TOGOSEN Univの活動拠点であるDiscordサーバーは、高度な情報統制と安全な議論環境を維持するため、<strong>完全許可制（非公開）</strong>で運営されています。一般的な参加者募集は常時行っておりません。ご了承ください。
+            TOGOSEN Univの活動拠点であるDiscordサーバーは、<strong>許可制（非公開）</strong>で運営されています。一般的な参加者募集は常時行っておりません。ご了承ください。
           </p>
         </div>
       </div>
@@ -847,7 +847,6 @@ function renderSeries(container, seriesId, initialTab = "overview") {
         <button class="tab-btn ${initialTab === 'articles' ? 'active' : ''}" data-tab="articles">攻略記事 (${articles.length})</button>
         <button class="tab-btn ${initialTab === 'videos' ? 'active' : ''}" data-tab="videos">関連動画 (${videos.length})</button>
         <button class="tab-btn ${initialTab === 'tournaments' ? 'active' : ''}" data-tab="tournaments">大会関連 (${tournaments.length})</button>
-        <button class="tab-btn ${initialTab === 'history' ? 'active' : ''}" data-tab="history">更新履歴 (${historyList.length})</button>
       </div>
 
       <!-- Tab Content Panels -->
@@ -986,23 +985,6 @@ function renderSeries(container, seriesId, initialTab = "overview") {
         ` : "<p style='color:var(--color-text-light); text-align:center; padding:3rem;'>現在、登録されている大会情報はありません。</p>"}
       </div>
 
-      <!-- PANEL 5: History -->
-      <div class="tab-content ${initialTab === 'history' ? 'active' : ''}" id="tab-history">
-        ${historyList.length > 0 ? `
-          <div class="history-list" style="max-width:800px; margin:0 auto;">
-            ${historyList.map(h => `
-              <div class="history-item" style="padding:1rem 0;">
-                <span class="history-date">${formatDate(h.date)}</span>
-                <span class="history-version">Ver. ${h.version}</span>
-                <div style="flex:1;">
-                  <strong style="display:block; margin-bottom:0.25rem;"><a href="#article/${h.articleId}">${h.articleTitle}</a></strong>
-                  <span style="color:var(--color-text-sub); font-size:0.85rem;">${h.summary}</span>
-                </div>
-              </div>
-            `).join("")}
-          </div>
-        ` : "<p style='color:var(--color-text-light); text-align:center; padding:3rem;'>現在、更新履歴はありません。</p>"}
-      </div>
     </div>
   `;
 
