@@ -57,7 +57,7 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
-  line-height: 1.6;
+  line-height: 1.75;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -148,7 +148,8 @@ button, input, textarea, select {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  height: 70px;
+  height: auto;
+  padding: 1rem 0;
 }
 
 .logo-link {
@@ -158,15 +159,15 @@ button, input, textarea, select {
 }
 
 .logo-icon {
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
   background-color: var(--color-text);
   color: var(--color-bg);
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 1.2rem;
+  font-size: 1.6rem;
   clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
   transition: background-color var(--transition-fast);
 }
@@ -2700,6 +2701,23 @@ body::before, body::after {
 .reveal.active, .reveal-left.active, .reveal-right.active, .section-header.active {
   opacity: 1;
   transform: translate(0);
+}
+
+/* --- Icon and Typography Adjustments for Enlarged Text --- */
+svg.lucide, i[data-lucide] {
+  width: 1.2em !important;
+  height: 1.2em !important;
+  vertical-align: middle;
+}
+
+/* Ensure paragraph spacing scales nicely */
+p {
+  margin-bottom: 1.2rem;
+}
+
+/* Adjust list spacings */
+li {
+  margin-bottom: 0.4rem;
 }
 
 /* --- CMS Custom Style Upgrades --- */
