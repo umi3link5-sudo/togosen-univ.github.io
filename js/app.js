@@ -2830,3 +2830,40 @@ function initScrollReveal() {
   
   setTimeout(checkReveal, 100);
 }
+
+/* Hero Background Video Slideshow (5s rotation) */
+function initHeroVideoSlideshow(container) {
+  const videos = container.querySelectorAll(".hero-video");
+  if (videos.length === 0) return;
+  
+  let currentIdx = 0;
+  
+  // Start playing the first video
+  videos[currentIdx].play().catch(e => console.log("Autoplay blocked by browser policy:", e));
+  
+  // Set interval for 5 seconds rotation
+  const slideshowInterval = setInterval(() => {
+    // Check if the element is still in the DOM (SPA routing check)
+    if (!document.body.contains(container)) {
+      clearInterval(slideshowInterval);
+      return;
+    }
+    
+    const nextIdx = (currentIdx + 1) % videos.length;
+    
+    // Fade out current video
+    videos[currentIdx].classList.remove("active");
+    
+    // Reset and fade in next video
+    videos[nextIdx].currentTime = 0;
+    videos[nextIdx].play().then(() => {
+      videos[nextIdx].classList.add("active");
+      currentIdx = nextIdx;
+    }).catch(e => {
+      console.log("Video play failed (possibly blocked):", e);
+      // Fallback: just swap class to try and show
+      videos[nextIdx].classList.add("active");
+      currentIdx = nextIdx;
+    });
+  }, 5000);
+}
