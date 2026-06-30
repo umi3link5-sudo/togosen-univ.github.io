@@ -504,9 +504,21 @@ function renderHome(container) {
   const activeTournament = tournaments.find(t => t.status === "upcoming") || tournaments[0];
 
   container.innerHTML = `
-    <!-- Hero Section -->
-    <div class="hero" style="min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 4rem 0; box-sizing: border-box;">
-      <div class="container" style="margin-left: 0; max-width: 100%; padding-left: 5%; padding-right: 5%; box-sizing: border-box;">
+    <!-- Hero Section with Video Slideshow Background -->
+    <div class="hero" style="min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 4rem 0; box-sizing: border-box; position: relative; overflow: hidden;">
+      
+      <!-- Video Slideshow Container -->
+      <div class="hero-video-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; overflow: hidden;">
+        <video class="hero-video active" src="./videos/hero1.mp4" loop muted playsinline style="position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); opacity: 0; transition: opacity 1.5s ease-in-out; z-index: 1;"></video>
+        <video class="hero-video" src="./videos/hero2.mp4" loop muted playsinline style="position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); opacity: 0; transition: opacity 1.5s ease-in-out; z-index: 1;"></video>
+        <video class="hero-video" src="./videos/hero3.mp4" loop muted playsinline style="position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; object-fit: cover; transform: translate(-50%, -50%); opacity: 0; transition: opacity 1.5s ease-in-out; z-index: 1;"></video>
+        
+        <!-- Gradient Overlay (下に行くほど透明度が下がる＝背景色のベージュに完全に溶け込む) -->
+        <div class="hero-video-overlay" style="position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(234, 232, 227, 0) 30%, rgba(234, 232, 227, 0.7) 75%, rgba(234, 232, 227, 1) 100%); z-index: 2; pointer-events: none;"></div>
+      </div>
+
+      <!-- Hero Content -->
+      <div class="container" style="margin-left: 0; max-width: 100%; padding-left: 5%; padding-right: 5%; box-sizing: border-box; position: relative; z-index: 3;">
         <div class="hero-brand-title font-outfit" style="font-size: 11vw; font-weight: 800; line-height: 0.85; letter-spacing: -0.02em; text-align: left; margin-bottom: 2rem; width: fit-content;">TOGOSEN<br>UNIV.</div>
         <h2 class="hero-title font-outfit" style="font-size: calc(18px + 1.5vw); margin-top: 1.5rem; max-width: 1000px; text-align: left; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em;">ARCHIVE OF OUR</h2>
         <div class="hero-meta" style="justify-content: flex-start; margin-left: 0; margin-top: 3rem;">
@@ -653,6 +665,11 @@ function renderHome(container) {
       </section>
     </div>
   `;
+  // Start Hero Video Slideshow
+  setTimeout(() => {
+    initHeroVideoSlideshow(container);
+  }, 100);
+
 
   // Attach tournament list logic
   const tournamentListContainer = container.querySelector("#home-tournament-list");
