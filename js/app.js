@@ -508,8 +508,7 @@ function renderHome(container) {
     <div class="hero" style="min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: flex-start; text-align: left; padding: 4rem 0; box-sizing: border-box;">
       <div class="container" style="margin-left: 0; max-width: 100%; padding-left: 5%; padding-right: 5%; box-sizing: border-box;">
         <div class="hero-brand-title font-outfit" style="font-size: 11vw; font-weight: 800; line-height: 0.85; letter-spacing: -0.02em; text-align: left; margin-bottom: 2rem; width: fit-content;">TOGOSEN<br>UNIV.</div>
-        <div class="hero-subtitle font-outfit" style="margin-top: 1rem; font-size: calc(12px + 0.8vw); letter-spacing: 0.1em; color: #ff6600; font-weight: 700;">TOGODAI</div>
-        <h2 class="hero-title font-outfit" style="font-size: calc(18px + 1.5vw); margin-top: 1.5rem; max-width: 1000px; text-align: left; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em;">Archive of Integrated Strategies.</h2>
+        <h2 class="hero-title font-outfit" style="font-size: calc(18px + 1.5vw); margin-top: 1.5rem; max-width: 1000px; text-align: left; line-height: 1.2; font-weight: 700; letter-spacing: -0.01em;">ARCHIVE OF OUR</h2>
         <div class="hero-meta" style="justify-content: flex-start; margin-left: 0; margin-top: 3rem;">
           <div class="hero-meta-item">STATUS: <strong>STABLE</strong></div>
           <div class="hero-meta-item" style="margin-left: 2rem;">LATEST UPDATE: <strong>${latestUpdateStr}</strong></div>
