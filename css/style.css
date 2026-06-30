@@ -2821,9 +2821,9 @@ li {
   color: var(--color-accent);
 }
 
-/* Threshold 1: When card width is 1200px or less (Title would wrap) */
+/* Threshold 1: When card width is 1300px or less (Title would wrap) */
 /* Hide Japanese Title and "VIEW ARCHIVES", display only "IS#x" and "ENTER ->" in one row (right-aligned) */
-@container (max-width: 1200px) {
+@container (max-width: 1300px) {
   .is-card-body-wrap {
     flex-direction: row !important;
     justify-content: flex-end !important;
@@ -2843,14 +2843,6 @@ li {
   }
   .is-card-go {
     font-size: 0.9rem !important;
-  }
-}
-
-/* Threshold 2: When card width is 650px or less */
-/* Hide the entire text block (display only image) */
-@container (max-width: 650px) {
-  .is-card-body-wrap {
-    display: none !important;
   }
 }
 
