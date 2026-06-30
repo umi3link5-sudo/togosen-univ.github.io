@@ -1377,6 +1377,8 @@ function renderTournamentPage(container) {
 }
 
 // --- RENDERING TOURNAMENT DETAIL PAGE ---
+let tournamentActiveLang = "ja"; // Global language state for tournament detail
+
 function renderTournamentDetail(container, tournamentId) {
   const tournaments = getTournaments();
   const t = tournaments.find(x => x.id === tournamentId);
