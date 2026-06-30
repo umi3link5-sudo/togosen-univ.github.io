@@ -87,8 +87,8 @@ button, input, textarea, select {
 }
 
 .container {
-  width: 100%;
-  max-width: var(--max-width);
+  width: 80%;
+  max-width: 1800px;
   margin: 0 auto;
   padding: 0 2rem;
 }
@@ -2704,7 +2704,8 @@ body::before, body::after {
 
 /* --- CMS Custom Style Upgrades --- */
 .cms-container {
-  max-width: 95% !important;
+  width: 80%;
+  max-width: 1800px !important;
 }
 
 /* CMS内のフォームや文字サイズを大きくし、見やすくする */
