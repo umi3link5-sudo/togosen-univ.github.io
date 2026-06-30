@@ -2669,14 +2669,27 @@ body::before, body::after {
   z-index: 99999;
 }
 
-/* Hide default cursor on desktop for premium custom feel */
-@media (pointer: fine) {
-  body {
-    cursor: none;
-  }
-  a, button, select, input, textarea, [role="button"], .update-card, .tab-btn, .sortable-header, .nav-link, [style*="cursor:pointer"] {
-    cursor: none !important;
-  }
+
+
+/* --- Scroll Reveal Animations --- */
+.reveal, .reveal-left, .reveal-right, .section-header {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: transform, opacity;
+}
+
+.reveal-left {
+  transform: translateX(-30px);
+}
+
+.reveal-right {
+  transform: translateX(30px);
+}
+
+.reveal.active, .reveal-left.active, .reveal-right.active, .section-header.active {
+  opacity: 1;
+  transform: translate(0);
 }
 
 

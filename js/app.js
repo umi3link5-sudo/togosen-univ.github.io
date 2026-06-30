@@ -1380,37 +1380,8 @@ function renderTournamentDetail(container, tournamentId) {
 
   const series = getSeriesById(t.seriesId);
   
-  // Tab availability check
-  const hasScoreboard = t.scoreboard && t.scoreboard.trim().split("\n").length >= 2;
+  const hasResults = (t.results && t.results.trim()) || (t.results_en && t.results_en.trim());
   const hasParticipants = t.participants && t.participants.length > 0;
-
-  // Scoreboard processing
-  const scoreboardData = parseCSVScoreboard(t.scoreboard || "");
-  let filteredScoreboard = [...scoreboardData];
-  let currentSortField = scoreboardData.length > 0 ? Object.keys(scoreboardData[0])[0] : "";
-  let currentSortOrder = "asc";
-  let searchQuery = "";
-
-  function parseCSVScoreboard(csvString) {
-    if (!csvString) return [];
-    const lines = csvString.trim().split("\n");
-    if (lines.length < 2) return [];
-    
-    const headers = lines[0].split(",").map(h => h.trim());
-    const data = [];
-    for (let i = 1; i < lines.length; i++) {
-      if (!lines[i]) continue;
-      const cols = lines[i].split(",").map(c => c.trim());
-      if (cols.length === headers.length) {
-        const row = {};
-        headers.forEach((h, idx) => {
-          row[h] = cols[idx];
-        });
-        data.push(row);
-      }
-    }
-    return data;
-  }
 
   function renderContent() {
     const isEn = tournamentActiveLang === "en";
@@ -1423,23 +1394,22 @@ function renderTournamentDetail(container, tournamentId) {
       <button class="tab-btn active" data-tab="overview">${isEn ? "Overview" : "概要"}</button>
       <button class="tab-btn" data-tab="rules">${isEn ? "Regulation" : "レギュレーション"}</button>
     `;
-    if (hasScoreboard) {
-      tabsHtml += `<button class="tab-btn" data-tab="scoreboard">${isEn ? "Scoreboard" : "スコアボード (結果)"}</button>`;
+    if (hasResults) {
+      tabsHtml += `<button class="tab-btn" data-tab="results">${isEn ? "Results" : "対戦結果"}</button>`;
     }
     if (hasParticipants) {
       tabsHtml += `<button class="tab-btn" data-tab="participants">${isEn ? "Members" : "参加登録メンバー"}</button>`;
     }
 
-    // Scoreboard Panel HTML (Simple placeholder, table rendered dynamically by JS)
-    const scoreboardPanelHtml = hasScoreboard ? `
-      <div class="tab-content" id="tab-detail-scoreboard">
-        <div class="scoreboard-controls">
-          <input type="text" id="scoreboard-search-input" class="scoreboard-search" placeholder="${isEn ? "Search player name..." : "プレイヤー名で検索..."}">
-          <div style="font-size: 0.85rem; color:var(--color-text-light); margin-top:0.5rem;">
-            ${isEn ? "※ Click headers to sort the table" : "※ヘッダーをクリックすると並び替わります"}
+    // Results Panel HTML
+    const resultsPanelHtml = hasResults ? `
+      <div class="tab-content" id="tab-detail-results">
+        <div class="markdown-body">
+          <h3 class="font-outfit" style="margin-top:0;">${isEn ? "Tournament Results" : "対戦結果"}</h3>
+          <div style="margin-top: 1.5rem;">
+            ${resultsHtml}
           </div>
         </div>
-        <div id="dynamic-scoreboard-table-area"></div>
       </div>
     ` : "";
 
@@ -1515,15 +1485,6 @@ function renderTournamentDetail(container, tournamentId) {
                   </div>
                 </div>
               ` : `<p style='color:var(--color-text-light);'>${isEn ? "※ No stream archive available." : "※配信アーカイブは未登録です。"}</p>`}
-              
-              ${resultsHtml ? `
-                <div style="margin-top: 2rem; border-top: 1px solid var(--color-border); padding-top: 2rem;">
-                  <h3 class="font-outfit">${isEn ? "Tournament Results" : "対戦結果"}</h3>
-                  <div class="markdown-body" style="margin-top: 1rem;">
-                    ${resultsHtml}
-                  </div>
-                </div>
-              ` : ""}
             </div>
 
             <aside>
@@ -1557,7 +1518,7 @@ function renderTournamentDetail(container, tournamentId) {
           </div>
         </div>
 
-        ${scoreboardPanelHtml}
+        ${resultsPanelHtml}
         ${participantsPanelHtml}
       </div>
     `;
@@ -1587,104 +1548,6 @@ function renderTournamentDetail(container, tournamentId) {
         if (targetPanel) targetPanel.classList.add("active");
       });
     });
-
-    // Re-render scoreboard if it exists
-    if (hasScoreboard) {
-      const tableArea = container.querySelector("#dynamic-scoreboard-table-area");
-      const searchInput = container.querySelector("#scoreboard-search-input");
-      
-      function renderScoreboard() {
-        if (scoreboardData.length === 0) {
-          tableArea.innerHTML = `<p style="color:var(--color-text-light);">${isEn ? "No scoreboard data available." : "スコアボードデータが存在しません。"}</p>`;
-          return;
-        }
-
-        filteredScoreboard = scoreboardData.filter(row => {
-          const keys = Object.keys(row);
-          const nameKey = keys.find(k => k === "プレイヤー" || k === "プレイヤー名" || k === "name" || k === "player") || keys[1] || "";
-          const pName = row[nameKey] || "";
-          return pName.toLowerCase().includes(searchQuery.toLowerCase());
-        });
-
-        filteredScoreboard.sort((a, b) => {
-          let valA = a[currentSortField] || "";
-          let valB = b[currentSortField] || "";
-          if (currentSortField === "順位" || currentSortField === "スコア" || currentSortField === "rank" || currentSortField === "score") {
-            const numA = parseInt(valA.replace(/,/g, ""), 10);
-            const numB = parseInt(valB.replace(/,/g, ""), 10);
-            if (!isNaN(numA) && !isNaN(numB)) {
-              return currentSortOrder === "asc" ? numA - numB : numB - numA;
-            }
-          }
-          return currentSortOrder === "asc" ? valA.localeCompare(valB, 'ja') : valB.localeCompare(valA, 'ja');
-        });
-
-        const headers = Object.keys(scoreboardData[0]);
-        
-        let tableHtml = `
-          <div class="scoreboard-table-wrapper">
-            <table class="scoreboard-table">
-              <thead>
-                <tr>
-        `;
-        
-        headers.forEach(h => {
-          const isCurrent = h === currentSortField;
-          const icon = isCurrent ? (currentSortOrder === "asc" ? " ▲" : " ▼") : "";
-          tableHtml += `<th class="sortable-header" data-field="${h}" style="cursor:pointer;">${h}${icon}</th>`;
-        });
-        
-        tableHtml += `
-                </tr>
-              </thead>
-              <tbody>
-        `;
-        
-        filteredScoreboard.forEach(row => {
-          tableHtml += '<tr>';
-          headers.forEach((h, idx) => {
-            const val = row[h] || "";
-            if (idx === 0) {
-              tableHtml += `<td><span class="rank-badge">${val}</span></td>`;
-            } else {
-              tableHtml += `<td>${val}</td>`;
-            }
-          });
-          tableHtml += '</tr>';
-        });
-        
-        tableHtml += `
-              </tbody>
-            </table>
-          </div>
-        `;
-
-        tableArea.innerHTML = tableHtml;
-
-        // Re-bind sort headers
-        tableArea.querySelectorAll(".sortable-header").forEach(th => {
-          th.addEventListener("click", () => {
-            const field = th.dataset.field;
-            if (currentSortField === field) {
-              currentSortOrder = currentSortOrder === "asc" ? "desc" : "asc";
-            } else {
-              currentSortField = field;
-              currentSortOrder = "asc";
-            }
-            renderScoreboard();
-          });
-        });
-      }
-
-      if (searchInput) {
-        searchInput.addEventListener("input", (e) => {
-          searchQuery = e.target.value;
-          renderScoreboard();
-        });
-      }
-
-      renderScoreboard();
-    }
   }
 
   renderContent();
@@ -2441,10 +2304,7 @@ function renderCMSForm(target) {
               <input type="text" id="form-tournament-participants" class="form-control" value="${(cmsEditingItem.participants || []).join(", ")}" placeholder="Dr. Texas, Dr. Ch'en">
             </div>
 
-            <div class="form-group">
-              <label for="form-tournament-scoreboard">スコアボード (CSV形式: 順位,プレイヤー,スコア...) [任意]</label>
-              <textarea id="form-tournament-scoreboard" class="form-control" style="min-height:100px; font-family:var(--font-mono); font-size:0.85rem;" placeholder="順位,プレイヤー,スコア,使用分隊&#10;1,Dr. Texas,2300,人科&#10;2,Dr. Ch'en,2100,破壊">${cmsEditingItem.scoreboard || ""}</textarea>
-            </div>
+
 
             <div class="cms-form-row">
               <div class="form-group">
@@ -2582,7 +2442,7 @@ function renderCMSForm(target) {
         date: target.querySelector("#form-tournament-date").value,
         archiveUrl: target.querySelector("#form-tournament-archive").value.trim(),
         participants: pArray,
-        scoreboard: target.querySelector("#form-tournament-scoreboard").value.trim(),
+        scoreboard: "",
         rules: rulesJaText.value.trim(),
         rules_en: rulesEnText.value.trim(),
         results: resultsJaText.value.trim(),
@@ -2675,12 +2535,7 @@ function renderGitHubSettings(target) {
       </div>
     </div>
 
-    <div style="margin-top: 3rem; border-top: 1px solid var(--color-border); padding-top: 2rem;">
-      <h3 class="font-outfit" style="margin-bottom: 1rem;">サイトの公開（GitHubへのデータ同期）</h3>
-      <p style="font-size: 0.85rem; color: var(--color-text-sub); margin-bottom: 1.5rem;">
-        ローカル（LocalStorage）に保存されている現在のすべての変更（記事、動画、大会記録など）を GitHub 上の <code>js/seedData.js</code> に上書き送信し、Webサイトを更新（再デプロイ）します。
-      </p>
-    </div>
+
   `;
 
   if (window.lucide) window.lucide.createIcons();
@@ -2726,26 +2581,50 @@ function initCustomCursor() {
 
   let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
   let isHovered = false;
+  let isMouseInWindow = true;
 
   window.addEventListener("mousemove", (e) => {
+    isMouseInWindow = true;
     mouse.x = e.clientX;
     mouse.y = e.clientY;
   });
 
-  // Spring Physics Nodes (16 points for super smooth line)
-  const nodeCount = 16;
+  // Pull the trail completely offscreen when the cursor leaves the window
+  document.addEventListener("mouseleave", (e) => {
+    isMouseInWindow = false;
+    const edgeX = e.clientX;
+    const edgeY = e.clientY;
+    
+    if (edgeX === undefined || edgeY === undefined) {
+      mouse.x = -200;
+      mouse.y = -200;
+      return;
+    }
+
+    const dirX = edgeX - window.innerWidth / 2;
+    const dirY = edgeY - window.innerHeight / 2;
+    const len = Math.hypot(dirX, dirY) || 1;
+    
+    // Set target far outside the window in the direction the mouse exited
+    mouse.x = edgeX + (dirX / len) * 300;
+    mouse.y = edgeY + (dirY / len) * 300;
+  });
+
+  document.addEventListener("mouseenter", (e) => {
+    isMouseInWindow = true;
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  // Ribbon Nodes (15 nodes for a shorter, cleaner trail)
+  const nodeCount = 15;
   const nodes = [];
   for (let i = 0; i < nodeCount; i++) {
     nodes.push({
       x: mouse.x,
-      y: mouse.y,
-      vx: 0,
-      vy: 0
+      y: mouse.y
     });
   }
-
-  const spring = 0.42;   // Spring constant (pull strength)
-  const friction = 0.55; // Friction constant (dampening)
 
   function addHoverListeners() {
     const interactiveElements = document.querySelectorAll(
@@ -2770,49 +2649,57 @@ function initCustomCursor() {
   function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Update spring physics
+    // Update head node with high inertia (slow follow behind the real cursor)
     const head = nodes[0];
-    head.x += (mouse.x - head.x) * 0.85;
-    head.y += (mouse.y - head.y) * 0.85;
+    head.x += (mouse.x - head.x) * 0.22;
+    head.y += (mouse.y - head.y) * 0.22;
 
+    // Update trailing nodes using Pure Easing (Lerp) to prevent overshoot (no spring physics)
+    // Using a faster lerp factor (0.45) so the trail catches up and disappears quicker
+    const lerpFactor = 0.45;
     for (let i = 1; i < nodeCount; i++) {
       const prev = nodes[i - 1];
       const curr = nodes[i];
 
-      const dx = prev.x - curr.x;
-      const dy = prev.y - curr.y;
-
-      curr.vx += dx * spring;
-      curr.vy += dy * spring;
-
-      curr.vx *= friction;
-      curr.vy *= friction;
-
-      curr.x += curr.vx;
-      curr.y += curr.vy;
+      curr.x += (prev.x - curr.x) * lerpFactor;
+      curr.y += (prev.y - curr.y) * lerpFactor;
     }
 
-    // Draw the trail (Ribbon / Line)
+    // Draw the trail as a single continuous seamless ribbon
     ctx.lineCap = "round";
     ctx.lineJoin = "round";
 
-    const maxWidth = isHovered ? 6.5 : 3.5;
-    const baseAlpha = isHovered ? 0.95 : 0.8;
+    const width = isHovered ? 8 : 4;
+    const maxAlpha = isHovered ? 0.9 : 0.75;
 
-    for (let i = 0; i < nodeCount - 1; i++) {
-      const curr = nodes[i];
-      const next = nodes[i + 1];
+    // Calculate stretch distance between head and tail to determine visibility
+    const dx = nodes[0].x - nodes[nodeCount - 1].x;
+    const dy = nodes[0].y - nodes[nodeCount - 1].y;
+    const dist = Math.hypot(dx, dy);
 
-      const ratio = i / (nodeCount - 1);
-      const width = maxWidth * (1 - ratio * 0.95);
-      const alpha = baseAlpha * (1 - ratio * 0.9);
+    // Dynamic alpha: fades out completely when stopped (dist near 0)
+    let alpha = 0;
+    if (dist > 1.5) {
+      // Fade in smoothly as the trail stretches, reaching maxAlpha at 20px stretch
+      alpha = Math.min(maxAlpha, (dist - 1.5) * 0.05);
+    }
 
+    // Only draw if the trail is visible (alpha > 0)
+    if (alpha > 0) {
       ctx.beginPath();
-      ctx.moveTo(curr.x, curr.y);
-      
-      const xc = (curr.x + next.x) / 2;
-      const yc = (curr.y + next.y) / 2;
-      ctx.quadraticCurveTo(curr.x, curr.y, xc, yc);
+      ctx.moveTo(nodes[0].x, nodes[0].y);
+
+      for (let i = 0; i < nodeCount - 1; i++) {
+        const curr = nodes[i];
+        const next = nodes[i + 1];
+        
+        const xc = (curr.x + next.x) / 2;
+        const yc = (curr.y + next.y) / 2;
+        ctx.quadraticCurveTo(curr.x, curr.y, xc, yc);
+      }
+
+      // Connect to the final tail node
+      ctx.lineTo(nodes[nodeCount - 1].x, nodes[nodeCount - 1].y);
 
       ctx.lineWidth = width;
       ctx.strokeStyle = `rgba(255, 102, 0, ${alpha})`;
@@ -2827,7 +2714,7 @@ function initCustomCursor() {
 
 /* Scroll Reveal (LIG Style) */
 function initScrollReveal() {
-  const reveals = document.querySelectorAll(".reveal, .reveal-left, .reveal-right");
+  const reveals = document.querySelectorAll(".reveal, .reveal-left, .reveal-right, .section-header");
 
   function checkReveal() {
     const triggerBottom = window.innerHeight * 0.85;
