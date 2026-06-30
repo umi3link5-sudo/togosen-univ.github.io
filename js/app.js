@@ -1652,7 +1652,7 @@ function renderCMSLogin(container) {
 // CMS Main Dashboard
 function renderCMSDashboard(container) {
   container.innerHTML = `
-    <div class="container">
+    <div class="container cms-container">
       <h1 class="font-outfit" style="font-size: 2.5rem; margin-bottom: 2rem; border-bottom: 2px solid var(--color-text); padding-bottom: 0.5rem;">
         CMS DASHBOARD
       </h1>

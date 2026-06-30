@@ -2702,5 +2702,66 @@ body::before, body::after {
   transform: translate(0);
 }
 
+/* --- CMS Custom Style Upgrades --- */
+.cms-container {
+  max-width: 95% !important;
+}
+
+/* CMS内のフォームや文字サイズを大きくし、見やすくする */
+.cms-layout, .cms-editor-pane, .cms-form {
+  font-size: 1.1rem; /* ベースを大きく */
+}
+
+.cms-form label {
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 0.6rem !important;
+  color: var(--color-text) !important;
+}
+
+.cms-form .form-control {
+  font-size: 1.05rem !important; /* 入力欄全体の文字を大きく */
+  padding: 0.8rem 1rem !important;
+  line-height: 1.6 !important;
+}
+
+.cms-form textarea.form-control {
+  font-size: 1.1rem !important; /* 本文テキストエリアをさらに大きく */
+  line-height: 1.7 !important;
+  min-height: 550px !important; /* 高さに余裕を持たせる */
+}
+
+.cms-preview-pane {
+  padding: 2rem !important;
+}
+
+.cms-preview-body {
+  font-size: 1.1rem !important; /* プレビューの文字も大きく */
+  line-height: 1.8 !important;
+}
+
+/* サイドバーのボタンも大きく */
+.cms-nav-btn {
+  font-size: 1rem !important;
+  padding: 0.8rem 1.2rem !important;
+}
+
+.cms-nav-title {
+  font-size: 0.9rem !important;
+  margin-top: 2rem !important;
+}
+
+/* 管理テーブルの文字サイズアップ */
+.cms-table {
+  font-size: 1.05rem !important;
+}
+.cms-table th, .cms-table td {
+  padding: 1rem !important;
+}
+.cms-action-btn {
+  font-size: 0.9rem !important;
+  padding: 0.4rem 0.8rem !important;
+}
+
 
 
