@@ -1445,193 +1445,122 @@ function renderTournamentDetail(container, tournamentId) {
     ` : "";
 
     container.innerHTML = `
-      <div class="tm-paper-theme-wrapper" style="background-color: #edd9c0; background-image: url(&quot;data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E&quot;); color: #38322e; padding: 4rem 0; min-height: 100vh; font-family: 'Inter', 'Noto Sans JP', sans-serif; box-sizing: border-box;">
-        <div class="container">
-          <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
-            <a href="#tournament" style="color:#ff6600; font-weight:700; font-size:0.9rem; text-decoration:none;">
-              &larr; 大会一覧へ戻る
-            </a>
-            
-            <!-- Language Selector Dropdown -->
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <label for="tournament-lang-select" style="font-size: 0.8rem; font-weight: 700; color: #7d7268; font-family: var(--font-outfit);">DISPLAY LANGUAGE:</label>
-              <select id="tournament-lang-select" class="form-control" style="padding: 0.25rem 1.5rem 0.25rem 0.75rem; font-size: 0.8rem; width: auto; height: auto; font-weight: 700; border-color: #d1c7bd; background: #ffffff; color: #38322e;">
-                <option value="ja" ${tournamentActiveLang === "ja" ? "selected" : ""}>日本語 (JA)</option>
-                <option value="en" ${tournamentActiveLang === "en" ? "selected" : ""}>English (EN)</option>
-              </select>
-            </div>
+      <div class="container">
+        <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+          <a href="#tournament" style="color:var(--color-accent); font-weight:700; font-size:0.9rem; text-decoration:none;">
+            &larr; 大会一覧へ戻る
+          </a>
+          
+          <!-- Language Selector Dropdown -->
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <label for="tournament-lang-select" style="font-size: 0.8rem; font-weight: 700; color: var(--color-text-sub); font-family: var(--font-outfit);">DISPLAY LANGUAGE:</label>
+            <select id="tournament-lang-select" class="form-control" style="padding: 0.25rem 1.5rem 0.25rem 0.75rem; font-size: 0.8rem; width: auto; height: auto; font-weight: 700; border-color: var(--color-border);">
+              <option value="ja" ${tournamentActiveLang === "ja" ? "selected" : ""}>日本語 (JA)</option>
+              <option value="en" ${tournamentActiveLang === "en" ? "selected" : ""}>English (EN)</option>
+            </select>
           </div>
-
-          ${t.status === "draft" ? `
-            <div class="draft-preview-banner" style="background-color: #ff6600; color: #ffffff; padding: 0.75rem 1.5rem; margin-bottom: 2rem; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; border-radius: 4px;">
-              <i data-lucide="eye-off" style="width:16px; height:16px;"></i>
-              ${isEn ? "ADMIN PREVIEW: This tournament is currently in DRAFT status." : "管理者用プレビュー：この大会情報は現在「下書き」状態です。一般ユーザーには公開されていません。"}
-            </div>
-          ` : ""}
-
-          ${t.image ? `
-            <div class="tournament-key-visual" style="width: 100%; max-height: 450px; aspect-ratio: 16/9; overflow: hidden; border: 1px solid #d1c7bd; margin-bottom: 2.5rem; background-color: #e8e4db; display: flex; justify-content: center; align-items: center; border-radius: 4px;">
-              <img src="${t.image}" alt="${titleText} キービジュアル" style="width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.08); animation: kvReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;">
-            </div>
-            <style>
-              @keyframes kvReveal {
-                from {
-                  opacity: 0;
-                  transform: scale(1.08);
-                }
-                to {
-                  opacity: 1;
-                  transform: scale(1);
-                }
-              }
-            </style>
-          ` : ""}
-
-          <div class="series-hero" style="background-color: rgba(255, 255, 255, 0.6); border: 1px solid #d1c7bd; padding: 2rem 3rem; margin-bottom: 2.5rem; border-radius: 4px; box-shadow: 0 4px 20px rgba(56, 50, 46, 0.03);">
-            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:0.75rem;">
-              <span class="tournament-status-badge ${t.status}" style="margin-bottom:0; background-color: ${t.status === 'draft' ? '#ff6600' : 'var(--color-accent)'}; color: #ffffff;">
-                ${t.status === "draft" ? (isEn ? "DRAFT / ADMIN ONLY" : "下書き / 管理者限定") : (t.status === "upcoming" ? (isEn ? "UPCOMING / ENTRY OPEN" : "開催予定 / エントリー受付中") : (isEn ? "COMPLETED / ARCHIVED" : "開催終了 / アーカイブ保管済"))}
-              </span>
-              <span style="font-size:0.85rem; color:#7d7268; font-weight:600; font-family:var(--font-outfit);">
-                ${series ? series.title : "共通"}
-              </span>
-            </div>
-            <h1 class="font-outfit" style="font-size: 2.25rem; font-weight: 800; margin-bottom: 1rem; color: #38322e;">
-              ${titleText}
-            </h1>
-            <div style="display:flex; gap:1.5rem; font-size:0.85rem; color:#6e655c; flex-wrap:wrap;">
-              <span><i data-lucide="calendar" style="width:12px; height:12px; display:inline; margin-right:0.25rem; color: #ff6600;"></i> ${isEn ? "Date" : "開催日"}: ${t.date}</span>
-              ${hasParticipants ? `<span><i data-lucide="users" style="width:12px; height:12px; display:inline; margin-right:0.25rem; color: #ff6600;"></i> ${isEn ? "Players" : "参加者"}: ${t.participants.length}名</span>` : ""}
-            </div>
-          </div>
-
-          <!-- Tab Navigation -->
-          <div class="tabs" style="border-bottom: 1px solid #d1c7bd; display: flex; gap: 1rem; margin-bottom: 2rem;">
-            ${tabsHtml}
-          </div>
-
-          <!-- Tab Contents -->
-          <!-- Panel 1: Overview -->
-          <div class="tab-content active" id="tab-detail-overview">
-            <div class="series-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 2.5rem; align-items: start;">
-              <div class="markdown-body">
-                <h3 class="font-outfit" style="margin-top:0; color: #38322e;">${isEn ? "Tournament Overview" : "大会概要"}</h3>
-                <p style="color: #6e655c;">${isEn ? `This official archive page documents the tournament "${titleText}". Complete regulations, match results, and video broadcasts are preserved here.` : `本アーカイブページは、「${titleText}」の公式記録です。レギュレーション詳細、対戦結果、および配信動画が記録されています。`}</p>
-                
-                ${t.archiveUrl ? `
-                  <div style="margin: 2rem 0;">
-                    <h4 class="font-outfit" style="margin-bottom:1rem; color: #38322e;"><i data-lucide="play-circle" style="color:#ff6600;"></i> ${isEn ? "Stream Archive" : "配信アーカイブ"}</h4>
-                    <div class="video-embed-container" style="max-width:100%; aspect-ratio: 16/9; border: 1px solid #d1c7bd; border-radius: 4px; overflow: hidden;">
-                      <iframe src="${getYouTubeEmbedUrl(t.archiveUrl)}" allowfullscreen style="border: none; width: 100%; height: 100%;"></iframe>
-                    </div>
-                  </div>
-                ` : `<p style='color:#a89f95;'>${isEn ? "※ No stream archive available." : "※配信アーカイブは未登録です。"}</p>`}
-              </div>
-
-              <aside>
-                <div class="tournament-sidebar-card" style="background-color: rgba(255, 255, 255, 0.6); border: 1px solid #d1c7bd; padding: 1.5rem; border-radius: 4px; box-shadow: 0 4px 20px rgba(56, 50, 46, 0.03);">
-                  <h3 class="font-outfit" style="font-size:1.1rem; margin-bottom:1rem; color: #38322e;">${isEn ? "Quick Info" : "大会情報概要"}</h3>
-                  <ul style="list-style:none; font-size:0.85rem; display:flex; flex-direction:column; gap:0.5rem; padding: 0;">
-                    <li style="display:flex; justify-content:space-between; border-bottom: 1px dashed #e2ded5; padding-bottom: 0.5rem;">
-                      <span style="color:#6e655c;">${isEn ? "Status" : "状況"}:</span>
-                      <strong style="text-transform:uppercase; color: #ff6600;">${t.status}</strong>
-                    </li>
-                    <li style="display:flex; justify-content:space-between; border-bottom: 1px dashed #e2ded5; padding-bottom: 0.5rem;">
-                      <span style="color:#6e655c;">${isEn ? "Date" : "開催日"}:</span>
-                      <strong style="color: #38322e;">${t.date}</strong>
-                    </li>
-                    ${hasParticipants ? `
-                      <li style="display:flex; justify-content:space-between; padding-bottom: 0.25rem;">
-                        <span style="color:#6e655c;">${isEn ? "Players" : "参加人数"}:</span>
-                        <strong style="color: #38322e;">${t.participants.length}名</strong>
-                      </li>
-                    ` : ""}
-                  </ul>
-                </div>
-              </aside>
-            </div>
-          </div>
-
-          <!-- Panel 2: Rules -->
-          <div class="tab-content" id="tab-detail-rules">
-            <div class="markdown-body">
-              ${rulesHtml}
-            </div>
-          </div>
-
-          ${resultsPanelHtml}
-          ${participantsPanelHtml}
         </div>
+
+        ${t.status === "draft" ? `
+          <div class="draft-preview-banner" style="background-color: var(--color-accent); color: var(--color-bg); padding: 0.75rem 1.5rem; margin-bottom: 2rem; font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; gap: 0.5rem; border-radius: 4px;">
+            <i data-lucide="eye-off" style="width:16px; height:16px;"></i>
+            ${isEn ? "ADMIN PREVIEW: This tournament is currently in DRAFT status." : "管理者用プレビュー：この大会情報は現在「下書き」状態です。一般ユーザーには公開されていません。"}
+          </div>
+        ` : ""}
+
+        ${t.image ? `
+          <div class="tournament-key-visual" style="width: 100%; max-height: 450px; aspect-ratio: 16/9; overflow: hidden; border: 1px solid var(--color-border); margin-bottom: 2.5rem; background-color: #000; display: flex; justify-content: center; align-items: center; border-radius: 4px;">
+            <img src="${t.image}" alt="${titleText} キービジュアル" style="width: 100%; height: 100%; object-fit: cover; opacity: 0; transform: scale(1.08); animation: kvReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;">
+          </div>
+          <style>
+            @keyframes kvReveal {
+              from {
+                opacity: 0;
+                transform: scale(1.08);
+              }
+              to {
+                opacity: 1;
+                transform: scale(1);
+              }
+            }
+          </style>
+        ` : ""}
+
+        <div class="series-hero" style="background-color: var(--color-bg-sub); border: 1px solid var(--color-border); padding: 2rem 3rem; margin-bottom: 2.5rem;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; margin-bottom:0.75rem;">
+            <span class="tournament-status-badge ${t.status}" style="margin-bottom:0;">
+              ${t.status === "draft" ? (isEn ? "DRAFT / ADMIN ONLY" : "下書き / 管理者限定") : (t.status === "upcoming" ? (isEn ? "UPCOMING / ENTRY OPEN" : "開催予定 / エントリー受付中") : (isEn ? "COMPLETED / ARCHIVED" : "開催終了 / アーカイブ保管済"))}
+            </span>
+            <span style="font-size:0.85rem; color:var(--color-text-light); font-weight:600; font-family:var(--font-outfit);">
+              ${series ? series.title : "共通"}
+            </span>
+          </div>
+          <h1 class="font-outfit" style="font-size: 2.25rem; font-weight: 800; margin-bottom: 1rem;">
+            ${titleText}
+          </h1>
+          <div style="display:flex; gap:1.5rem; font-size:0.85rem; color:var(--color-text-sub); flex-wrap:wrap;">
+            <span><i data-lucide="calendar" style="width:12px; height:12px; display:inline; margin-right:0.25rem;"></i> ${isEn ? "Date" : "開催日"}: ${t.date}</span>
+            ${hasParticipants ? `<span><i data-lucide="users" style="width:12px; height:12px; display:inline; margin-right:0.25rem;"></i> ${isEn ? "Players" : "参加者"}: ${t.participants.length}名</span>` : ""}
+          </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+          ${tabsHtml}
+        </div>
+
+        <!-- Tab Contents -->
+        <!-- Panel 1: Overview -->
+        <div class="tab-content active" id="tab-detail-overview">
+          <div class="series-grid">
+            <div class="markdown-body">
+              <h3 class="font-outfit" style="margin-top:0;">${isEn ? "Tournament Overview" : "大会概要"}</h3>
+              <p>${isEn ? `This official archive page documents the tournament "${titleText}". Complete regulations, match results, and video broadcasts are preserved here.` : `本アーカイブページは、「${titleText}」の公式記録です。レギュレーション詳細、対戦結果、および配信動画が記録されています。`}</p>
+              
+              ${t.archiveUrl ? `
+                <div style="margin: 2rem 0;">
+                  <h4 class="font-outfit" style="margin-bottom:1rem;"><i data-lucide="play-circle" style="color:var(--color-accent);"></i> ${isEn ? "Stream Archive" : "配信アーカイブ"}</h4>
+                  <div class="video-embed-container" style="max-width:700px;">
+                    <iframe src="${getYouTubeEmbedUrl(t.archiveUrl)}" allowfullscreen></iframe>
+                  </div>
+                </div>
+              ` : `<p style='color:var(--color-text-light);'>${isEn ? "※ No stream archive available." : "※配信アーカイブは未登録です。"}</p>`}
+            </div>
+
+            <aside>
+              <div class="tournament-sidebar-card">
+                <h3 class="font-outfit" style="font-size:1.1rem; margin-bottom:1rem;">${isEn ? "Quick Info" : "大会情報概要"}</h3>
+                <ul style="list-style:none; font-size:0.85rem; display:flex; flex-direction:column; gap:0.5rem;">
+                  <li style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--color-text-sub);">${isEn ? "Status" : "状況"}:</span>
+                    <strong style="text-transform:uppercase;">${t.status}</strong>
+                  </li>
+                  <li style="display:flex; justify-content:space-between;">
+                    <span style="color:var(--color-text-sub);">${isEn ? "Date" : "開催日"}:</span>
+                    <strong>${t.date}</strong>
+                  </li>
+                  ${hasParticipants ? `
+                    <li style="display:flex; justify-content:space-between;">
+                      <span style="color:var(--color-text-sub);">${isEn ? "Players" : "参加人数"}:</span>
+                      <strong>${t.participants.length}名</strong>
+                    </li>
+                  ` : ""}
+                </ul>
+              </div>
+            </aside>
+          </div>
+        </div>
+
+        <!-- Panel 2: Rules -->
+        <div class="tab-content" id="tab-detail-rules">
+          <div class="markdown-body">
+            ${rulesHtml}
+          </div>
+        </div>
+
+        ${resultsPanelHtml}
+        ${participantsPanelHtml}
       </div>
-      
-      <style>
-        /* Styles for paper theme */
-        .tm-paper-theme-wrapper .tab-btn {
-          color: #a89f95;
-          border: none;
-          background: none;
-          padding: 0.5rem 1rem;
-          font-weight: 700;
-          font-family: var(--font-outfit);
-          cursor: pointer;
-          border-bottom: 2px solid transparent;
-          transition: all 0.2s ease;
-        }
-        .tm-paper-theme-wrapper .tab-btn:hover {
-          color: #38322e;
-        }
-        .tm-paper-theme-wrapper .tab-btn.active {
-          color: #ff6600;
-          border-bottom: 2px solid #ff6600;
-        }
-        .tm-paper-theme-wrapper .markdown-body {
-          color: #5c524a;
-          line-height: 1.8;
-        }
-        .tm-paper-theme-wrapper .markdown-body h1,
-        .tm-paper-theme-wrapper .markdown-body h2,
-        .tm-paper-theme-wrapper .markdown-body h3 {
-          color: #38322e;
-          border-bottom: 1px solid #d1c7bd;
-          padding-bottom: 0.25rem;
-          margin-top: 2rem;
-          margin-bottom: 1rem;
-        }
-        .tm-paper-theme-wrapper .markdown-body table {
-          width: 100%;
-          border-collapse: collapse;
-          margin: 1.5rem 0;
-        }
-        .tm-paper-theme-wrapper .markdown-body th,
-        .tm-paper-theme-wrapper .markdown-body td {
-          border: 1px solid #d1c7bd;
-          padding: 0.75rem;
-        }
-        .tm-paper-theme-wrapper .markdown-body th {
-          background-color: rgba(255, 255, 255, 0.4);
-          font-weight: 700;
-          color: #38322e;
-        }
-        .tm-paper-theme-wrapper .markdown-body tr:nth-child(even) {
-          background-color: rgba(255, 255, 255, 0.2);
-        }
-        .tm-paper-theme-wrapper .tournament-participants-list ul {
-          list-style: none;
-          padding: 0;
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.5rem;
-        }
-        .tm-paper-theme-wrapper .tournament-participants-list li {
-          background-color: rgba(255, 255, 255, 0.6);
-          border: 1px solid #d1c7bd;
-          padding: 0.4rem 0.8rem;
-          border-radius: 2px;
-          font-size: 0.85rem;
-          color: #38322e;
-          font-weight: 600;
-        }
-      </style>
     `;
 
     // Re-initialize icons
