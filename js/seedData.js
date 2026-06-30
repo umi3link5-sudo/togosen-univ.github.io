@@ -8,7 +8,7 @@ export const INITIAL_SERIES = [
   {
     "id": "mizuki",
     "num": "IS#3",
-    "title": "ミヅキと紺紺碧の樹",
+    "title": "ミヅキと紺碧の樹",
     "image": "./images/mizuki.png"
   },
   {
